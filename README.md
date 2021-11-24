@@ -24,3 +24,9 @@ Assumptions:
 
   - A beer containing lactose is identified by the field 'twist' containing the word "lactose"
   - A beer is considered dry hopped if one of the ingredients is "dry hop"
+
+How to run app:
+  - Clone repository at https://github.com/timkorona/beer-app.git
+  - Navigate to the directory ../beer-app
+  - npm install
+  - npm start
