@@ -112,8 +112,8 @@ test('renders IBU column', () => {
 //actual fetch being hit but jest.fn() is there, what am I missing?
 test('call fetchBeers when Get List of Beers button clicked', () => {
   const fetchBeers = jest.fn();
-  render(<App />);
-  // render(<Button variant="contained" onClick={fetchBeers}>Get List of Beers</Button>);
+  // render(<App />);
+  render(<Button variant="contained" onClick={fetchBeers}>Get List of Beers</Button>);
   const button = screen.getByRole('button', { name: 'Get List of Beers' });
   expect(button).toBeInTheDocument();
   fireEvent.click(button);
