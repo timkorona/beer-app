@@ -54,37 +54,37 @@ describe('WHEN: the beer list table is first rendered', () => {
     render(<App />);
   });
   
-  test('THEN: renders the table of beers', () => {
+  it('THEN: renders the table of beers', () => {
     const tableContainerElement = screen.queryByRole('table', { name: 'list of beers' });
     expect(tableContainerElement).toBeInTheDocument();
   });
   
-  test('THEN: renders the Image column', () => {
+  it('THEN: renders the Image column', () => {
     const imageColumnElement = screen.queryByRole('columnheader', { name: 'Image' });
     expect(imageColumnElement).toBeInTheDocument();
   });
   
-  test('THEN: renders the Name of Beer column', () => {
+  it('THEN: renders the Name of Beer column', () => {
     const nameColumnElement = screen.queryByRole('columnheader', { name: 'Name of Beer' });
     expect(nameColumnElement).toBeInTheDocument();
   });
   
-  test('THEN: renders the Beer Tagline column', () => {
+  it('THEN: renders the Beer Tagline column', () => {
     const taglineContainerElement = screen.queryByRole('columnheader', { name: 'Beer Tagline' });
     expect(taglineContainerElement).toBeInTheDocument();
   });
   
-  test('THEN: renders the Description column', () => {
+  it('THEN: renders the Description column', () => {
     const descriptionColumnElement = screen.queryByRole('columnheader', { name: 'Description' });
     expect(descriptionColumnElement).toBeInTheDocument();
   });
   
-  test('THEN: renders the ABV column', () => {
+  it('THEN: renders the ABV column', () => {
     const abvColulmnElement = screen.queryByRole('columnheader', { name: 'ABV' });
     expect(abvColulmnElement).toBeInTheDocument();
   });
   
-  test('THEN: renders the IBU column', () => {
+  it('THEN: renders the IBU column', () => {
     const ibuColumnElement = screen.queryByRole('columnheader', { name: 'IBU' });
     expect(ibuColumnElement).toBeInTheDocument();
   });
@@ -101,42 +101,42 @@ describe('WHEN: the Get List of Beers button is clicked', () => {
     fireEvent.click(button);
   });
   
-  test('THEN: renders the beer iamge', async () => {
+  it('THEN: renders the beer iamge', async () => {
     const displayedImage = screen.queryByAltText('alt_text');
     await expect(displayedImage.src).toContain('https://images.punkapi.com/v2/keg.png');
   });
   
-  test('THEN: renders the name of the beer', async () => {
+  it('THEN: renders the name of the beer', async () => {
     await expect(screen.queryByText('Buzz')).toBeInTheDocument();
   });
   
-  test('THEN: renders the tagline for the beer', async () => {
+  it('THEN: renders the tagline for the beer', async () => {
     await expect(screen.queryByText('A Real Bitter Experience.')).toBeInTheDocument();
   });
   
-  test('THEN: renders the description of the beer', async () => {
+  it('THEN: renders the description of the beer', async () => {
    await expect(screen.queryByText('Beer description text.')).toBeInTheDocument();
   });
   
-  test('THEN: renders the ABV of the beer', async () => {
+  it('THEN: renders the ABV of the beer', async () => {
     await expect(screen.queryByText('4.5')).toBeInTheDocument();
   });
   
-  test('THEN:renders the IBU of the beer', async () => {
+  it('THEN:renders the IBU of the beer', async () => {
     await expect(screen.queryByText('60')).toBeInTheDocument();
   });
   
-  test('THEN: displays warning if beer contains lactose', async () => {
+  it('THEN: displays warning if beer contains lactose', async () => {
     await expect(screen.queryByText('Contains Lactose')).toBeInTheDocument();
   });
   
-  test('THEN: displays info alert if one of the ingredients is "dry hop"', async () => {
+  it('THEN: displays info alert if one of the ingredients is "dry hop"', async () => {
     await expect(screen.queryByText('Dry Hopped')).toBeInTheDocument();
   });
 });
 
 describe('WHEN: a beer contains no lactose', () => {
-  test('THEN: no warning for lactose is displayed', async () => {
+  it('THEN: no warning for lactose is displayed', async () => {
     global.fetch = jest.fn(() => Promise.resolve({
       json: () => Promise.resolve(beerNoWarningsOrAlerts)
     }));
@@ -150,7 +150,7 @@ describe('WHEN: a beer contains no lactose', () => {
 });
 
 describe('WHEN: a beer is not dry hopped', () => {
-  test('THEN: no alert for dry hopped is displayed', async () => {
+  it('THEN: no alert for dry hopped is displayed', async () => {
     global.fetch = jest.fn(() => Promise.resolve({
       json: () => Promise.resolve(beerNoWarningsOrAlerts)
     }));
