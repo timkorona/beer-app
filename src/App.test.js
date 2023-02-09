@@ -101,42 +101,42 @@ describe('WHEN: the Get List of Beers button is clicked', () => {
     fireEvent.click(button);
   });
   
-  it('THEN: renders the beer iamge', async () => {
+  it('THEN: renders the beer iamge', () => {
     const displayedImage = screen.queryByAltText('alt_text');
-    await expect(displayedImage.src).toContain('https://images.punkapi.com/v2/keg.png');
+    expect(displayedImage.src).toContain('https://images.punkapi.com/v2/keg.png');
   });
   
-  it('THEN: renders the name of the beer', async () => {
-    await expect(screen.queryByText('Buzz')).toBeInTheDocument();
+  it('THEN: renders the name of the beer', () => {
+    expect(screen.queryByText('Buzz')).toBeInTheDocument();
   });
   
-  it('THEN: renders the tagline for the beer', async () => {
-    await expect(screen.queryByText('A Real Bitter Experience.')).toBeInTheDocument();
+  it('THEN: renders the tagline for the beer', () => {
+    expect(screen.queryByText('A Real Bitter Experience.')).toBeInTheDocument();
   });
   
-  it('THEN: renders the description of the beer', async () => {
-   await expect(screen.queryByText('Beer description text.')).toBeInTheDocument();
+  it('THEN: renders the description of the beer', () => {
+   expect(screen.queryByText('Beer description text.')).toBeInTheDocument();
   });
   
-  it('THEN: renders the ABV of the beer', async () => {
-    await expect(screen.queryByText('4.5')).toBeInTheDocument();
+  it('THEN: renders the ABV of the beer', () => {
+    expect(screen.queryByText('4.5')).toBeInTheDocument();
   });
   
-  it('THEN:renders the IBU of the beer', async () => {
-    await expect(screen.queryByText('60')).toBeInTheDocument();
+  it('THEN:renders the IBU of the beer', () => {
+    expect(screen.queryByText('60')).toBeInTheDocument();
   });
   
-  it('THEN: displays warning if beer contains lactose', async () => {
-    await expect(screen.queryByText('Contains Lactose')).toBeInTheDocument();
+  it('THEN: displays warning if beer contains lactose', () => {
+    expect(screen.queryByText('Contains Lactose')).toBeInTheDocument();
   });
   
-  it('THEN: displays info alert if one of the ingredients is "dry hop"', async () => {
-    await expect(screen.queryByText('Dry Hopped')).toBeInTheDocument();
+  it('THEN: displays info alert if one of the ingredients is "dry hop"', () => {
+    expect(screen.queryByText('Dry Hopped')).toBeInTheDocument();
   });
 });
 
 describe('WHEN: a beer contains no lactose', () => {
-  it('THEN: no warning for lactose is displayed', async () => {
+  it('THEN: no warning for lactose is displayed', () => {
     global.fetch = jest.fn(() => Promise.resolve({
       json: () => Promise.resolve(beerNoWarningsOrAlerts)
     }));
@@ -145,12 +145,12 @@ describe('WHEN: a beer contains no lactose', () => {
     const button = screen.queryByRole('button', { name: 'GET LIST OF BEERS' });
     fireEvent.click(button);
   
-    await expect(screen.queryByText('Contains Lactose')).not.toBeInTheDocument();
+    expect(screen.queryByText('Contains Lactose')).not.toBeInTheDocument();
   });
 });
 
 describe('WHEN: a beer is not dry hopped', () => {
-  it('THEN: no alert for dry hopped is displayed', async () => {
+  it('THEN: no alert for dry hopped is displayed', () => {
     global.fetch = jest.fn(() => Promise.resolve({
       json: () => Promise.resolve(beerNoWarningsOrAlerts)
     }));
@@ -159,6 +159,6 @@ describe('WHEN: a beer is not dry hopped', () => {
     const button = screen.queryByRole('button', { name: 'GET LIST OF BEERS' });
     fireEvent.click(button);
   
-    await expect(screen.queryByText('Dry Hopped')).not.toBeInTheDocument();
+    expect(screen.queryByText('Dry Hopped')).not.toBeInTheDocument();
     });
 });

@@ -13,8 +13,8 @@ import Paper from '@mui/material/Paper';
 const App = () => {
   const [data, setData] = useState([]);
 
-  const fetchBeers = async () => {
-    await fetch("https://api.punkapi.com/v2/beers?per_page=80")
+  const fetchBeers = () => {
+    fetch("https://api.punkapi.com/v2/beers?per_page=80")
     .then((response) => response.json())
     .then((data) => {
       data.sort ((a, b) => b.abv - a.abv);
