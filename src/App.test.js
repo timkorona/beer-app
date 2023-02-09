@@ -1,14 +1,13 @@
+import React from "react";
 import { render, screen, fireEvent } from '@testing-library/react';
 import App from './App';
-import fetchMock from 'fetch-mock';
-import Button from '@mui/material/Button';
 
 const beerList = [
   {
     "id": 1,
     "name": "Buzz",
     "tagline": "A Real Bitter Experience.",
-    "description": "A light, crisp and bitter IPA brewed with English and American hops. A small batch brewed only once.",
+    "description": "Beer description text.",
     "image_url": "https://images.punkapi.com/v2/keg.png",
     "abv": 4.5,
     "ibu": 60,
@@ -21,19 +20,22 @@ const beerList = [
           "add": "start",
         },
         {
-          "add": "start",
+          "add": "dry hop",
         }
       ]
     }
-  },
+  }
+]
+
+const beerNoWarningsOrAlerts = [
   {
     "id": 2,
-    "name": "Buzz2",
-    "tagline": "A Real Bitter Experience.",
+    "name": "Another Buzz",
+    "tagline": "Another Bitter Experience.",
     "description": "A light, crisp and bitter IPA brewed with English and American hops. A small batch brewed only once.",
     "image_url": "https://images.punkapi.com/v2/keg.png",
-    "abv": 4.5,
-    "ibu": 60,
+    "abv": 5.5,
+    "ibu": 65,
     "method": {
       "twist": "No L-word here."
     },
@@ -41,93 +43,122 @@ const beerList = [
       "hops": [
         {
           "add": "start",
-        },
-        {
-          "add": "dry hop",
         }
       ]
     }
   }
-];
-fetchMock.mock('https://api.punkapi.com/v2/beers?per_page=80', {
-  data: beerList,
-  status: 200
+]
+
+describe('WHEN: the beer list table is first rendered', () => {
+  beforeEach(() => {
+    render(<App />);
+  });
+  
+  test('THEN: renders the table of beers', () => {
+    const tableContainerElement = screen.queryByRole('table', { name: 'list of beers' });
+    expect(tableContainerElement).toBeInTheDocument();
+  });
+  
+  test('THEN: renders the Image column', () => {
+    const imageColumnElement = screen.queryByRole('columnheader', { name: 'Image' });
+    expect(imageColumnElement).toBeInTheDocument();
+  });
+  
+  test('THEN: renders the Name of Beer column', () => {
+    const nameColumnElement = screen.queryByRole('columnheader', { name: 'Name of Beer' });
+    expect(nameColumnElement).toBeInTheDocument();
+  });
+  
+  test('THEN: renders the Beer Tagline column', () => {
+    const taglineContainerElement = screen.queryByRole('columnheader', { name: 'Beer Tagline' });
+    expect(taglineContainerElement).toBeInTheDocument();
+  });
+  
+  test('THEN: renders the Description column', () => {
+    const descriptionColumnElement = screen.queryByRole('columnheader', { name: 'Description' });
+    expect(descriptionColumnElement).toBeInTheDocument();
+  });
+  
+  test('THEN: renders the ABV column', () => {
+    const abvColulmnElement = screen.queryByRole('columnheader', { name: 'ABV' });
+    expect(abvColulmnElement).toBeInTheDocument();
+  });
+  
+  test('THEN: renders the IBU column', () => {
+    const ibuColumnElement = screen.queryByRole('columnheader', { name: 'IBU' });
+    expect(ibuColumnElement).toBeInTheDocument();
+  });
 });
 
-afterEach(() => {
-  fetchMock.restore();
-})
-
-test('renders button for retrieving list of beers', () => {
-  render(<App />);
-  const buttonElement = screen.getByRole('button', { name: 'Get List of Beers' });
-  expect(buttonElement).toBeInTheDocument();
+describe('WHEN: the Get List of Beers button is clicked', () => {
+  global.fetch = jest.fn(() => Promise.resolve({
+    json: () => Promise.resolve(beerList)
+  }));
+  
+  beforeEach(() => {
+    render(<App />);
+    const button = screen.queryByRole('button', { name: 'GET LIST OF BEERS' });
+    fireEvent.click(button);
+  });
+  
+  test('THEN: renders the beer iamge', async () => {
+    const displayedImage = screen.queryByAltText('alt_text');
+    await expect(displayedImage.src).toContain('https://images.punkapi.com/v2/keg.png');
+  });
+  
+  test('THEN: renders the name of the beer', async () => {
+    await expect(screen.queryByText('Buzz')).toBeInTheDocument();
+  });
+  
+  test('THEN: renders the tagline for the beer', async () => {
+    await expect(screen.queryByText('A Real Bitter Experience.')).toBeInTheDocument();
+  });
+  
+  test('THEN: renders the description of the beer', async () => {
+   await expect(screen.queryByText('Beer description text.')).toBeInTheDocument();
+  });
+  
+  test('THEN: renders the ABV of the beer', async () => {
+    await expect(screen.queryByText('4.5')).toBeInTheDocument();
+  });
+  
+  test('THEN:renders the IBU of the beer', async () => {
+    await expect(screen.queryByText('60')).toBeInTheDocument();
+  });
+  
+  test('THEN: displays warning if beer contains lactose', async () => {
+    await expect(screen.queryByText('Contains Lactose')).toBeInTheDocument();
+  });
+  
+  test('THEN: displays info alert if one of the ingredients is "dry hop"', async () => {
+    await expect(screen.queryByText('Dry Hopped')).toBeInTheDocument();
+  });
 });
 
-test('renders table of beers', () => {
-  render(<App />);
-  const tableContainerElement = screen.getByRole('table', { name: 'list of beers' });
-  expect(tableContainerElement).toBeInTheDocument();
+describe('WHEN: a beer contains no lactose', () => {
+  test('THEN: no warning for lactose is displayed', async () => {
+    global.fetch = jest.fn(() => Promise.resolve({
+      json: () => Promise.resolve(beerNoWarningsOrAlerts)
+    }));
+    
+    render(<App />);
+    const button = screen.queryByRole('button', { name: 'GET LIST OF BEERS' });
+    fireEvent.click(button);
+  
+    await expect(screen.queryByText('Contains Lactose')).not.toBeInTheDocument();
+  });
 });
 
-test('renders Image column', () => {
-  render(<App />);
-  const imageColumnElement = screen.getByRole('columnheader', { name: 'Image' });
-  expect(imageColumnElement).toBeInTheDocument();
+describe('WHEN: a beer is not dry hopped', () => {
+  test('THEN: no alert for dry hopped is displayed', async () => {
+    global.fetch = jest.fn(() => Promise.resolve({
+      json: () => Promise.resolve(beerNoWarningsOrAlerts)
+    }));
+    
+    render(<App />);
+    const button = screen.queryByRole('button', { name: 'GET LIST OF BEERS' });
+    fireEvent.click(button);
+  
+    await expect(screen.queryByText('Dry Hopped')).not.toBeInTheDocument();
+    });
 });
-
-test('renders Name of Beer column', () => {
-  render(<App />);
-  const nameColumnElement = screen.getByRole('columnheader', { name: 'Name of Beer' });
-  expect(nameColumnElement).toBeInTheDocument();
-});
-
-test('renders Beer Tagline column', () => {
-  render(<App />);
-  const taglineContainerElement = screen.getByRole('columnheader', { name: 'Beer Tagline' });
-  expect(taglineContainerElement).toBeInTheDocument();
-});
-
-test('renders Description column', () => {
-  render(<App />);
-  const descriptionColumnElement = screen.getByRole('columnheader', { name: 'Description' });
-  expect(descriptionColumnElement).toBeInTheDocument();
-});
-
-test('renders ABV column', () => {
-  render(<App />);
-  const abvColulmnElement = screen.getByRole('columnheader', { name: 'ABV' });
-  expect(abvColulmnElement).toBeInTheDocument();
-});
-
-test('renders IBU column', () => {
-  render(<App />);
-  const ibuColumnElement = screen.getByRole('columnheader', { name: 'IBU' });
-  expect(ibuColumnElement).toBeInTheDocument();
-});
-
-//I am befuddled as to why using line 115 does not work but line 116 does.
-//Line 116 hits jest.fn(), while line 115 appears to hit the actual fetchBeers function.
-//Line 115 gives a message stating absence of the jest.fn() for the fetch results in the
-//actual fetch being hit but jest.fn() is there, what am I missing?
-test('call fetchBeers when Get List of Beers button clicked', () => {
-  const fetchBeers = jest.fn();
-  // render(<App />);
-  render(<Button variant="contained" onClick={fetchBeers}>Get List of Beers</Button>);
-  const button = screen.getByRole('button', { name: 'Get List of Beers' });
-  expect(button).toBeInTheDocument();
-  fireEvent.click(button);
-  expect(fetchBeers).toHaveBeenCalled();
-});
-
-// test('displays alert warning if beer contains lactose', () => {
-// });
-
-// test('does NOT display alert warning if beer does NOT contain lactose', () => {
-// });
-
-// test('displays info alert if one of the ingredients is "dry hop"', () => {
-// });
-
-// test('does NOT display info alert if no "dry hop" ingredient', () => {
-// });

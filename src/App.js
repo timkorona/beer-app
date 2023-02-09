@@ -10,19 +10,19 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-function App() {
+const App = () => {
   const [data, setData] = useState([]);
 
-  const fetchBeers = () => {
-    fetch("https://api.punkapi.com/v2/beers?per_page=80")
-      .then((response) => response.json())
-      .then((data) => {
-        data.sort ((a, b) => b.abv - a.abv);
-        setData(data);
-      });
+  const fetchBeers = async () => {
+    await fetch("https://api.punkapi.com/v2/beers?per_page=80")
+    .then((response) => response.json())
+    .then((data) => {
+      data.sort ((a, b) => b.abv - a.abv);
+      setData(data);
+    });
   };
 
-  function DryHopAlert(inHopsArray) {
+  const DryHopAlert = (inHopsArray) => {
     for (let i=0; i < inHopsArray.length; i++) {
       if (inHopsArray[i].add.toLowerCase() === "dry hop") {
         return <Alert severity="info">Dry Hopped</Alert>;
@@ -32,7 +32,7 @@ function App() {
     return;
   };
 
-  function LactoseAlert(inString) {
+  const LactoseAlert = (inString) => {
     if (inString != null && inString.toLowerCase().includes("lactose")) {
       return (<Alert severity="warning">Contains Lactose</Alert>);
     };
@@ -43,7 +43,7 @@ function App() {
   return (
     <div className="App">
       <div style={{marginTop: 16, marginBottom: 32}}>
-        <Button variant="contained" onClick={fetchBeers}>Get List of Beers</Button>
+        <Button variant="contained" onClick={fetchBeers}>GET LIST OF BEERS</Button>
       </div>
       <div>
         <TableContainer sx={{maxWidth: '80%', mx: 'auto'}} component={Paper}>
@@ -62,7 +62,7 @@ function App() {
               {data.map((row) => (
                 <TableRow key={row.name}>
                   <TableCell align="center">
-                    <img alt="" src={row.image_url} style={{height: 100}}></img>
+                    <img src={row.image_url} alt="alt_text" style={{height: 100}}></img>
                   </TableCell>
                   <TableCell align="left">
                     {row.name}
